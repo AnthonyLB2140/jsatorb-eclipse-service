@@ -59,12 +59,12 @@ def EclipseCalculatorREST():
             return eclipseToJSON( calculator.getEclipse() )
 
         elif 'cartesian' in typeSat:
-            x = float( sat['satellite.x'] )
-            y = float( sat['satellite.y'] )
-            z = float( sat['satellite.z'] )
-            vx = float( sat['satellite.vx'] )
-            vy = float( sat['satellite.vy'] )
-            vz = float( sat['satellite.vz'] )
+            x = float( sat['x'] )
+            y = float( sat['y'] )
+            z = float( sat['z'] )
+            vx = float( sat['vx'] )
+            vy = float( sat['vy'] )
+            vz = float( sat['vz'] )
             calculator = EclipseCalculator(HAL_SatPos(x, y, z, vx, vy, vz, 'cartesian'), 
                 datetime.strptime(stringDateFormat, stringDateFormat), duration)
             return eclipseToJSON( calculator.getEclipse() )

@@ -3,31 +3,35 @@ from datetime import datetime
 import orekit
 vm = orekit.initVM()
 
+from orekit.pyhelpers import setup_orekit_curdir
+setup_orekit_curdir()
+
 from org.hipparchus.geometry.euclidean.threed import RotationOrder, Vector3D
 from org.hipparchus.util import FastMath, Pair
 
 from org.orekit.attitudes import AttitudeProvider, AttitudesSequence, LofOffset
-from org.orekit.bodies import CelestialBodyFactory
+from org.orekit.bodies import CelestialBodyFactory, OneAxisEllipsoid
 from org.orekit.errors import OrekitException
 from org.orekit.frames import FramesFactory, LOFType
 from org.orekit.orbits import CartesianOrbit, KeplerianOrbit, Orbit, PositionAngle
 from org.orekit.propagation import Propagator, SpacecraftState
 from org.orekit.propagation.analytical import KeplerianPropagator
 from org.orekit.propagation.events import EclipseDetector, EventDetector
-from org.orekit.propagation.events.handlers import ContinueOnEvent
+from org.orekit.propagation.events.handlers import ContinueOnEvent, EventHandler, PythonEventHandler
 from org.orekit.time import AbsoluteDate, TimeScalesFactory
-from org.orekit.utils import AngularDerivativesFilter, Constants, PVCoordinates, PVCoordinatesProvider
+from org.orekit.utils import AngularDerivativesFilter, Constants, IERSConventions, PVCoordinates, PVCoordinatesProvider
+from org.hipparchus.ode.events import Action
 
 class HAL_SatPos:
 
     def __init__(self, param1, param2, param3, param4, param5, param6, typeSat):
-        self.param1, self.param2, self.param3 = param1, param2, param3
-        self.param4, self.param5, self.param6 = param4, param5, param6
+        self.param1, self.param2, self.param3 = float(param1), float(param2), float(param3)
+        self.param4, self.param5, self.param6 = float(param4), float(param5), float(param6)
         self.typeSat = typeSat
 
 
 # Class needed in class EclipseCalculator to replace SwitchHandler
-class SwitchHandlerPython:
+class SwitchHandlerPython(AttitudesSequence.SwitchHandler):
 
     def __init__(self, output):
         self.output = output
@@ -37,6 +41,43 @@ class SwitchHandlerPython:
             self.output.append((s.getDate(), True))
         else:
             self.output.append((s.getDate(), False))
+
+class myNightEclipseDetector(PythonEventHandler):
+    
+    def init(self, s, T):
+        pass
+    
+    def addOutput(self, output):
+        self.output = output
+
+    def eventOccurred(self, s, detector, increasing):
+        if not increasing:
+            self.output.append([s.getDate()])
+            print(s.getDate()," : event occurred, entering eclipse => switching to night law")
+        return Action.CONTINUE
+    
+    def resetState(self, detector, oldState):
+        return oldState
+
+class myDayEclipseDetector(PythonEventHandler):
+    
+    def init(self, s, T):
+        pass
+    
+    def addOutput(self, output):
+        self.output = output
+
+    def eventOccurred(self, s, detector, increasing):
+        if increasing:
+            if len(self.output) > 0:
+                self.output[-1].append(s.getDate())
+            else:
+                self.output.append([s.getDate()])
+            print(s.getDate()," : event occurred, exiting eclipse => switching to day law")
+        return Action.CONTINUE
+    
+    def resetState(self, detector, oldState):
+        return oldState
 
 
 class EclipseCalculator:
@@ -50,11 +91,9 @@ class EclipseCalculator:
     def __init__(self, kepOrCartPos, initialDateTime, duration):
         self.duration = duration
 
-        initialDate = initialDateTime.date
-        initialTime = initialDateTime.time
-        self.date = AbsoluteDate(initialDate.year+1900, initialDate.month+1,
-            initialDate.day, initialTime.hour, initialTime.minute,
-            initialTime.second, TimeScalesFactory.getUTC())
+        self.date = AbsoluteDate(initialDateTime.year, initialDateTime.month,
+            initialDateTime.day, initialDateTime.hour, initialDateTime.minute,
+            float(initialDateTime.second), TimeScalesFactory.getUTC())  
 
         if kepOrCartPos.typeSat == 'keplerian':
             self.orbit = KeplerianOrbit(kepOrCartPos.param1, 
@@ -70,33 +109,44 @@ class EclipseCalculator:
         # Output will be a list of tuples
         self.output = []
 
-    def getEclipse:
+    def getEclipse(self):
         try:
             # Attitudes sequence definition
             dayObservationLaw = LofOffset(self.orbit.getFrame(), LOFType.VVLH,
-                RotationOrder.XYZ, FastMath.toRadians(20), FastMath.toRadians(40),
-                0)
+                RotationOrder.XYZ, FastMath.toRadians(20.), FastMath.toRadians(40.),
+                0.)
             nightRestingLaw = LofOffset(self.orbit.getFrame(), LOFType.VVLH)
-            sun = CelestialBodyFactory.getSun()
-            earth = CelestialBodyFactory.getEarth()
 
-            # Creation des events trigger
-            dayNightEvent = EclipseDetector(sun, 696000000., earth, 
-                Constants.WGS84_EARTH_EQUATORIAL_RADIUS).withHandler(ContinueOnEvent<EclipseDetector>())
-            nightDayEvent = EclipseDetector(sun, 696000000., earth,
-                Constants.WGS84_EARTH_EQUATORIAL_RADIUS).withHandler(new ContinueOnEvent<EclipseDetector>())
+            sun = CelestialBodyFactory.getSun()
+            ITRF = FramesFactory.getITRF(IERSConventions.IERS_2010, True)
+            #earth = OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
+            #    Constants.WGS84_EARTH_FLATTENING, ITRF)
+            earth = OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
+                0., ITRF)
+
+            # Creation of trigger events
+            dayNightEvent = EclipseDetector(sun, 696000000., earth)
+            handlerDayNightEvent = myNightEclipseDetector().of_(EclipseDetector)
+            handlerDayNightEvent.addOutput(self.output)
+            dayNightEvent = dayNightEvent.withHandler(handlerDayNightEvent)
+
+            nightDayEvent = EclipseDetector(sun, 696000000., earth)
+            handlerNightDayEvent = myDayEclipseDetector().of_(EclipseDetector)
+            handlerNightDayEvent.addOutput(self.output)
+            nightDayEvent = nightDayEvent.withHandler(handlerNightDayEvent)
 
             attitudesSequence = AttitudesSequence()
-            switchHandler = SwitchHandlerPython(self.output)
+            #switchHandler = SwitchHandlerPython(self.output)
             
             # Add the swithchHandler as callback
             attitudesSequence.addSwitchingCondition(dayObservationLaw, 
                 nightRestingLaw, dayNightEvent, False, True, 10.0,
-                AngularDerivativesFilter.USE_R, switchHandler)
+                AngularDerivativesFilter.USE_R, None)
             attitudesSequence.addSwitchingCondition(nightRestingLaw,
                 dayObservationLaw, nightDayEvent, True, False, 10.0,
-                AngularDerivativesFilter.USE_R, switchHandler)
-            if dayNightEvent.g(SpacecraftState(self.orbit)) >= 0:
+                AngularDerivativesFilter.USE_R, None)
+
+            if dayNightEvent.g(SpacecraftState(self.orbit)) >= 0.:
                 attitudesSequence.resetActiveProvider(dayObservationLaw)
             else:
                 attitudesSequence.resetActiveProvider(nightRestingLaw)
@@ -105,11 +155,18 @@ class EclipseCalculator:
 
             attitudesSequence.registerSwitchEvents(propagator)
 
-            propagator.propagate(self.date.shiftedBy(self.duration))
-
+            endDate = self.date.shiftedBy(self.duration)
+            propagator.propagate(endDate)
+            #print("Propagation ended at " + finalState.getDate().toString())
+        
         except OrekitException as oe:
             print(oe.getMessage())
 
+        if len(self.output[0]) == 1:
+            self.output[0].insert(0, self.date)
+
+        return self.output
+        '''
         result = []
         tempTrueDate = None
         for el in self.output:
@@ -119,3 +176,4 @@ class EclipseCalculator:
                 result.append((tempTrueDate, el[0]))
 
         return result
+        '''
