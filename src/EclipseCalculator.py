@@ -53,7 +53,7 @@ class myNightEclipseDetector(PythonEventHandler):
     def eventOccurred(self, s, detector, increasing):
         if not increasing:
             self.output.append([s.getDate()])
-            print(s.getDate()," : event occurred, entering eclipse => switching to night law")
+            #print(s.getDate()," : event occurred, entering eclipse => switching to night law")
         return Action.CONTINUE
     
     def resetState(self, detector, oldState):
@@ -73,7 +73,7 @@ class myDayEclipseDetector(PythonEventHandler):
                 self.output[-1].append(s.getDate())
             else:
                 self.output.append([s.getDate()])
-            print(s.getDate()," : event occurred, exiting eclipse => switching to day law")
+            #print(s.getDate()," : event occurred, exiting eclipse => switching to day law")
         return Action.CONTINUE
     
     def resetState(self, detector, oldState):

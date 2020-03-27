@@ -1,10 +1,3 @@
-import orekit
-vm = orekit.initVM()
-
-from org.hipparchus.util import Pair
-from org.orekit.data import DataProvidersManager, DirectoryCrawler
-from org.orekit.time import AbsoluteDate
-
 import bottle
 from bottle import request, response
 import json
@@ -27,7 +20,7 @@ def enable_cors(fn):
             return fn(*args, **kwargs)
     return _enable_cors
 
-@app.route('propagation/eclipses', method=['OPTIONS','POST'])
+@app.route('/propagation/eclipses', method=['OPTIONS','POST'])
 @enable_cors
 def EclipseCalculatorREST():
     response.content_type = 'application/json'
