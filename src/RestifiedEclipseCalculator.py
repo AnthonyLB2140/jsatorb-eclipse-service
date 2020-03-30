@@ -28,7 +28,7 @@ def EclipseCalculatorREST():
     data = request.json
     print(json.dumps(data))
     
-    stringDateFormat = '%Y-%m-%dT%H:%M:%S%'
+    stringDateFormat = '%Y-%m-%dT%H:%M:%S'
 
     try:
         header = data['header']
@@ -84,4 +84,4 @@ def eclipseToJSON(eclipse):
         
 
 if __name__ == '__main__':
-    bottle.run(host = '127.0.0.1', port = 8000)
+    bottle.run(host = '127.0.0.1', port = 4567)

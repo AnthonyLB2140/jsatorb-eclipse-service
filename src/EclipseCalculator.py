@@ -119,10 +119,10 @@ class EclipseCalculator:
 
             sun = CelestialBodyFactory.getSun()
             ITRF = FramesFactory.getITRF(IERSConventions.IERS_2010, True)
-            #earth = OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
-            #    Constants.WGS84_EARTH_FLATTENING, ITRF)
             earth = OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
-                0., ITRF)
+                Constants.WGS84_EARTH_FLATTENING, ITRF)
+            #earth = OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
+            #    0., ITRF)
 
             # Creation of trigger events
             dayNightEvent = EclipseDetector(sun, 696000000., earth)
