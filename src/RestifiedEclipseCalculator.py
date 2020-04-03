@@ -66,7 +66,7 @@ def EclipseCalculatorREST():
             return error('bad type')
 
     except Exception as e:
-        return error(e.__name__)
+        return error(type(e).__name__)
 
 def error(errorName):
     return '{"error": "' + errorName + '"}'
