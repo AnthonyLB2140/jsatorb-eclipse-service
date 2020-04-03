@@ -165,6 +165,9 @@ class EclipseCalculator:
         if len(self.output[0]) == 1:
             self.output[0].insert(0, self.date)
 
+        if len(self.output[-1]) == 1:
+            self.output[-1].append(endDate)
+
         return self.output
         '''
         result = []
