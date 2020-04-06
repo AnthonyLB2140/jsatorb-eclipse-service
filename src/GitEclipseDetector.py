@@ -13,22 +13,22 @@ from org.orekit.attitudes import AttitudesSequence;
 from org.orekit.attitudes import LofOffset;
 from org.orekit.bodies import CelestialBodyFactory, OneAxisEllipsoid;
 from org.orekit.errors import OrekitException;
-#from org.orekit.errors import PropagationException;
-from org.orekit.frames import FramesFactory;
+#from org.orekit.errors import PropagationException
+from org.orekit.frames import FramesFactory
 from org.orekit.frames import LOFType;
 from org.orekit.orbits import KeplerianOrbit, Orbit, PositionAngle
-from org.orekit.propagation import Propagator;
-from org.orekit.propagation import SpacecraftState;
-from org.orekit.propagation.analytical import EcksteinHechlerPropagator;
-from org.orekit.propagation.events import EclipseDetector;
-from org.orekit.propagation.events import EventDetector;
-from org.orekit.propagation.events.handlers import EventHandler, PythonEventHandler;
+from org.orekit.propagation import Propagator
+from org.orekit.propagation import SpacecraftState
+from org.orekit.propagation.analytical import EcksteinHechlerPropagator, KeplerianPropagator
+from org.orekit.propagation.events import EclipseDetector
+from org.orekit.propagation.events import EventDetector
+from org.orekit.propagation.events.handlers import EventHandler, PythonEventHandler
 from org.orekit.propagation.sampling import OrekitFixedStepHandler, PythonOrekitFixedStepHandler
-from org.orekit.time import AbsoluteDate;
-from org.orekit.time import TimeScalesFactory;
+from org.orekit.time import AbsoluteDate
+from org.orekit.time import TimeScalesFactory
 from org.orekit.utils import Constants, IERSConventions, AngularDerivativesFilter
-from org.orekit.utils import PVCoordinates;
-from org.orekit.utils import PVCoordinatesProvider;
+from org.orekit.utils import PVCoordinates
+from org.orekit.utils import PVCoordinatesProvider
 from org.hipparchus.ode.events import Action
 
 import math
@@ -108,9 +108,12 @@ def gitEclipseDetector(param1, param2, param3, param4, param5, param6, typeOrbit
         # initial position is in nighttime
         attitudesSequence.resetActiveProvider(nightRestingLaw)
 
-    propagator = EcksteinHechlerPropagator(initialOrbit, attitudesSequence,
+    '''propagator = EcksteinHechlerPropagator(initialOrbit, attitudesSequence,
         Constants.EIGEN5C_EARTH_EQUATORIAL_RADIUS, Constants.EIGEN5C_EARTH_MU, Constants.EIGEN5C_EARTH_C20,
         Constants.EIGEN5C_EARTH_C30, Constants.EIGEN5C_EARTH_C40, Constants.EIGEN5C_EARTH_C50, Constants.EIGEN5C_EARTH_C60)
+    '''
+    propagator = KeplerianPropagator(initialOrbit, attitudesSequence)
+
 
     attitudesSequence.registerSwitchEvents(propagator)
     class mystephandler(PythonOrekitFixedStepHandler):

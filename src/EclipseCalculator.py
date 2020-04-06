@@ -7,6 +7,7 @@ from orekit.pyhelpers import setup_orekit_curdir
 setup_orekit_curdir()
 
 from org.hipparchus.geometry.euclidean.threed import RotationOrder, Vector3D
+from org.hipparchus.ode.events import Action
 from org.hipparchus.util import FastMath, Pair
 
 from org.orekit.attitudes import AttitudeProvider, AttitudesSequence, LofOffset
@@ -20,7 +21,9 @@ from org.orekit.propagation.events import EclipseDetector, EventDetector
 from org.orekit.propagation.events.handlers import ContinueOnEvent, EventHandler, PythonEventHandler
 from org.orekit.time import AbsoluteDate, TimeScalesFactory
 from org.orekit.utils import AngularDerivativesFilter, Constants, IERSConventions, PVCoordinates, PVCoordinatesProvider
-from org.hipparchus.ode.events import Action
+
+from org.orekit.propagation.sampling import OrekitFixedStepHandler, PythonOrekitFixedStepHandler
+
 
 class HAL_SatPos:
 
@@ -156,6 +159,7 @@ class EclipseCalculator:
             attitudesSequence.registerSwitchEvents(propagator)
 
             endDate = self.date.shiftedBy(self.duration)
+
             propagator.propagate(endDate)
             #print("Propagation ended at " + finalState.getDate().toString())
         
