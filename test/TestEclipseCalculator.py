@@ -17,7 +17,7 @@ from GitEclipseDetector import gitEclipseDetector
 
 class TestDateConversion(unittest.TestCase):
 
-    tolerance = 3. # in s
+    tolerance = 1. # in s
 
     def testEclipseKeplerian(self):
         # Test Keplerian Supaero
@@ -62,7 +62,7 @@ class TestDateConversion(unittest.TestCase):
 
             for idxElement, elEclipse in enumerate(listEclipse):
                 elGitEclipse = gitEclipse[idxElement]
-                #self.assertTrue(elEclipse[0].isCloseTo(elGitEclipse[0], self.tolerance))
+                self.assertTrue(elEclipse[0].isCloseTo(elGitEclipse[0], self.tolerance))
                 self.assertEqual(elEclipse[1], elGitEclipse[1])
             
                 offsetCur = abs(elEclipse[0].offsetFrom(elGitEclipse[0], utcTimeScale))
@@ -70,7 +70,7 @@ class TestDateConversion(unittest.TestCase):
                 listOffset.append(offsetCur)
 
             print('Max offset: {} s'.format(maxOffset))
-            print('List of offsets: {}'.format(listOffset))
+            #print('List of offsets: {}'.format(listOffset))
 
         except Exception:
             traceback.print_exc()
@@ -118,7 +118,7 @@ class TestDateConversion(unittest.TestCase):
 
             for idxElement, elEclipse in enumerate(listEclipse):
                 elGitEclipse = gitEclipse[idxElement]
-                #self.assertTrue(elEclipse[0].isCloseTo(elGitEclipse[0], self.tolerance))
+                self.assertTrue(elEclipse[0].isCloseTo(elGitEclipse[0], self.tolerance))
                 self.assertEqual(elEclipse[1], elGitEclipse[1])
             
                 offsetCur = abs(elEclipse[0].offsetFrom(elGitEclipse[0], utcTimeScale))
@@ -126,7 +126,7 @@ class TestDateConversion(unittest.TestCase):
                 listOffset.append(offsetCur)
 
             print('Max offset: {} s'.format(maxOffset))
-            print('List of offsets: {}'.format(listOffset))
+            #print('List of offsets: {}'.format(listOffset))
             
         except Exception:
             traceback.print_exc()
