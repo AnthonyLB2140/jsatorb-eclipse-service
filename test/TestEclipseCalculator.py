@@ -22,7 +22,7 @@ class TestDateConversion(unittest.TestCase):
     def testEclipseKeplerian(self):
         # Test Keplerian Supaero
         sma, ecc, inc = 7128137.0, 0.007014455530245822, FastMath.toRadians(98.55)
-        pa, raan, lv = FastMath.toRadians(90.0),5.191699999999999, 359.93
+        pa, raan, lv = FastMath.toRadians(90.0), FastMath.toRadians(5.191699999999999), FastMath.toRadians(359.93)
         typeOrbit = 'keplerian'
         dateTimeString = '2011-12-01T16:43:45'
         duration = 86400.
