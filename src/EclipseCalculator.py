@@ -32,19 +32,6 @@ class HAL_SatPos:
         self.param4, self.param5, self.param6 = float(param4), float(param5), float(param6)
         self.typeSat = typeSat
 
-
-# Class needed in class EclipseCalculator to replace SwitchHandler
-'''class SwitchHandlerPython(AttitudesSequence.SwitchHandler):
-
-    def __init__(self, output):
-        self.output = output
-
-    def switchOcurred(self, preceding, following, s):
-        if preceding == dayObservationLaw:
-            self.output.append((s.getDate(), True))
-        else:
-            self.output.append((s.getDate(), False))'''
-
 class myNightEclipseDetector(PythonEventHandler):
     
     def init(self, s, T):

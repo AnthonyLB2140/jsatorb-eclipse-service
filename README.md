@@ -1,15 +1,21 @@
 # Eclipse Calculator v0.01
 
-## Requirements
-- Running with java 8 (oracle version)
-- Maven
-## Run the service
+This code computes eclipse calculation for Earth (WGS84) and the Sun
+
+## Prerequisites
+- Python3
+- Orekit, hyparchus and bottle must be installed
+
+## Launch the service
 ```
-mvn install
-cd target
-java -jar mission-analysis-1.0-SNAPSHOT-jar-with-dependencies.jar
+python src/EclipseCalculatorREST.py
 ```
-service is going to run on the **port 4567**
+or
+```
+python JSatOrbREST.py
+```
+for the centralized API, in the jsatorb-rest-api folder.
+By default the service is going to run on the **port 8000**
 
 ## Requests examples
 route propagation/eclipses, POST method
@@ -31,7 +37,6 @@ route propagation/eclipses, POST method
     }
 }
 ```
-
 
 ```json
 {
