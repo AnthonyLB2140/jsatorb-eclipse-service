@@ -1,3 +1,6 @@
+# Written from gitlab example of the python wrapper of orekit by Petrus Hyvonen
+# url:   https://gitlab.orekit.org/orekit-labs/python-wrapper/-/blob/master/examples/Example_EarthObservation_-_Attitude_Sequence.ipynb
+
 import orekit
 #orekit = __import__("orekit-10.2")
 orekit.initVM()
