@@ -76,13 +76,13 @@ RestifiedEclipseCalculator {
                     EclipseCalculator calculator = new EclipseCalculator(new HAL_SatPos(sma,ecc,inc,pa,raan,lv, "keplerian"), formatter.parse(stringDate), duration);
                     return (eclipseToJSON(calculator.getEclipse()));
                 }else if(type.contains("cartesian")){
-                    double x=Double.parseDouble((String) sat.get("satellite.x"));
-                    double y=Double.parseDouble((String) sat.get("satellite.y"));
-                    double z=Double.parseDouble((String) sat.get("satellite.z"));
-                    double vx=Double.parseDouble((String) sat.get("satellite.vx"));
-                    double vy=Double.parseDouble((String) sat.get("satellite.vy"));
-                    double vz=Double.parseDouble((String) sat.get("satellite.vz"));
-                    EclipseCalculator calculator = new EclipseCalculator(new HAL_SatPos(x,y,z,vx,vy,vz, "keplerian"), formatter.parse(stringDate), duration);
+                    double x=Double.parseDouble((String) sat.get("x"));
+                    double y=Double.parseDouble((String) sat.get("y"));
+                    double z=Double.parseDouble((String) sat.get("z"));
+                    double vx=Double.parseDouble((String) sat.get("vx"));
+                    double vy=Double.parseDouble((String) sat.get("vy"));
+                    double vz=Double.parseDouble((String) sat.get("vz"));
+                    EclipseCalculator calculator = new EclipseCalculator(new HAL_SatPos(x,y,z,vx,vy,vz, "cartesian"), formatter.parse(stringDate), duration);
                     return (eclipseToJSON(calculator.getEclipse()));
                 }else{
                     return error("bad type");
