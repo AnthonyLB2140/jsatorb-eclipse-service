@@ -72,29 +72,34 @@ class myDayEclipseDetector(PythonEventHandler):
 
 class EclipseCalculator:
     
-    # Attributes: duration, date, orbit, mu, output
+    # Attributes: init and end dates, orbit, mu, output
     mu =  3.986004415e+14
 
     '''
-    Initiate with a HAL_SatPos kepOrCartPos, an initial date and a float duration
+    Initiate with a HAL_SatPos kepOrCartPos, an initial date and an end date
     '''
-    def __init__(self, kepOrCartPos, initialDateTime, duration):
-        self.duration = duration
-
-        self.date = AbsoluteDate(initialDateTime.year, initialDateTime.month,
+    def __init__(self, kepOrCartPos, initialDateTime, endDateTime):
+        self.initDate = AbsoluteDate(initialDateTime.year, initialDateTime.month,
             initialDateTime.day, initialDateTime.hour, initialDateTime.minute,
-            float(initialDateTime.second), TimeScalesFactory.getUTC())  
+            float(initialDateTime.second), TimeScalesFactory.getUTC())
+
+        self.endDate = AbsoluteDate(endDateTime.year, endDateTime.month,
+            endDateTime.day, endDateTime.hour, endDateTime.minute,
+            float(endDateTime.second), TimeScalesFactory.getUTC())
+
+        if self.endDate.compareTo(self.initDate) < 0:
+            raise ValueError("End date before start date")
 
         if kepOrCartPos.typeSat == 'keplerian':
             self.orbit = KeplerianOrbit(kepOrCartPos.param1, 
                 kepOrCartPos.param2, kepOrCartPos.param3, kepOrCartPos.param4,
                 kepOrCartPos.param5, kepOrCartPos.param6, PositionAngle.MEAN,
-                FramesFactory.getEME2000(), self.date, self.mu)
+                FramesFactory.getEME2000(), self.initDate, self.mu)
         elif kepOrCartPos.typeSat == 'cartesian':
             pos = Vector3D(kepOrCartPos.param1, kepOrCartPos.param2, kepOrCartPos.param3)
             speed = Vector3D(kepOrCartPos.param4, kepOrCartPos.param5, kepOrCartPos.param6)
             self.orbit = CartesianOrbit(PVCoordinates(pos, speed),
-                FramesFactory.getEME2000(), self.date, self.mu)
+                FramesFactory.getEME2000(), self.initDate, self.mu)
 
         # Output will be a list of tuples
         self.output = []
@@ -145,29 +150,17 @@ class EclipseCalculator:
 
             attitudesSequence.registerSwitchEvents(propagator)
 
-            endDate = self.date.shiftedBy(self.duration)
-
-            propagator.propagate(endDate)
+            propagator.propagate(self.endDate)
             #print("Propagation ended at " + finalState.getDate().toString())
         
         except OrekitException as oe:
             print(oe.getMessage())
 
         if len(self.output[0]) == 1:
-            self.output[0].insert(0, self.date)
+            self.output[0].insert(0, self.initDate)
 
         if len(self.output[-1]) == 1:
-            self.output[-1].append(endDate)
+            self.output[-1].append(self.endDate)
 
         return self.output
-        '''
-        result = []
-        tempTrueDate = None
-        for el in self.output:
-            if el[1] == True:
-                tempTrueDate = el[0]
-            elif tempTrueDate != None:
-                result.append((tempTrueDate, el[0]))
-
-        return result
-        '''
+        

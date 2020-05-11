@@ -34,8 +34,8 @@ def EclipseCalculatorREST():
         header = data['header']
         sat = data['satellite']
 
-        stringDate = str( header['timeStart'] )
-        duration = float( header['duration'] )
+        stringDateInit = str( header['timeStart'] )
+        stringDateEnd = str( header['timeEnd'] )
 
         typeSat = str( sat['type'] )
         if 'keplerian' in typeSat:
@@ -48,7 +48,7 @@ def EclipseCalculatorREST():
             raan = float( sat['raan'] )
             lv = float( sat['meanAnomaly'] )
             calculator = EclipseCalculator(HAL_SatPos(sma, ecc, inc, pa, raan, lv, 'keplerian'),
-                datetime.strptime(stringDate, stringDateFormat), duration)
+                datetime.strptime(stringDateInit, stringDateFormat), datetime.strptime(stringDateEnd, stringDateFormat))
             return eclipseToJSON( calculator.getEclipse() )
 
         elif 'cartesian' in typeSat:
