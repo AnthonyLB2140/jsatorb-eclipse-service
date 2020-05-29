@@ -12,6 +12,7 @@ from org.orekit.time import AbsoluteDate
 from org.orekit.time import TimeScalesFactory
 
 sys.path.append('../src')
+sys.path.append('src')
 from EclipseCalculator import HAL_SatPos, EclipseCalculator
 from GitEclipseDetector import gitEclipseDetector
 
