@@ -1,2 +1,5 @@
 target
 .idea
+runTests.sh
+src/__pycache__
+
