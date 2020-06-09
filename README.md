@@ -1,6 +1,6 @@
 # JSatOrb Project: Eclipse Calculator 
 
-This code computes eclipse calculation for Earth (WGS84) and the Sun.
+This code computes eclipse calculation for the Earth (WGS84) and the Sun.
 
 
 ## Prerequisites
@@ -14,7 +14,7 @@ This code computes eclipse calculation for Earth (WGS84) and the Sun.
 
 ## Launch the service
 
-This module is accessible through the JSatOrb centralized REST API which can be launched through the following commands:
+This module is accessible through the JSatOrb centralized REST API which can be launched using the following commands:
 
 Go into the REST API folder
 ```
@@ -44,6 +44,8 @@ This script will run all tests available in the test folder (all files satisfyin
 
 ## Eclipse Request Example
 
+This request to the REST API contains a demand to the backend to process an Eclipse calculation between the Earth and a given satellite from the 1st to the 2nd of December 2011.  
+
 Route : '/propagation/eclipses', POST method
 ```json
 {
@@ -66,8 +68,9 @@ Route : '/propagation/eclipses', POST method
 
 ## Eclipse Response Example
 
-The response is an array of sunlight time interval
-response type :
+The response is an array of sunlight time intervals.
+
+Example of response:
 
 ```json
 [
