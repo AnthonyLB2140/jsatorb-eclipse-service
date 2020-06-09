@@ -25,8 +25,9 @@ class TestDateConversion(unittest.TestCase):
         sma, ecc, inc = 7128137.0, 0.007014455530245822, FastMath.toRadians(98.55)
         pa, raan, lv = FastMath.toRadians(90.0), FastMath.toRadians(5.191699999999999), FastMath.toRadians(359.93)
         typeOrbit = 'keplerian'
-        dateTimeString = '2011-12-01T16:43:45'
+        dateTimeStringStart = '2011-12-01T16:43:45'
         duration = 86400.
+        dateTimeStringEnd = '2011-12-02T16:43:45'
 
         if typeOrbit == 'keplerian':
             param1, param2, param3 = sma, ecc, inc
@@ -35,17 +36,18 @@ class TestDateConversion(unittest.TestCase):
             param1, param2, param3 = x, y, z
             param4, param5, param6 = vx, vy, vz
 
-        datetimeCur = datetime.fromisoformat(dateTimeString)
+        datetimeStart = datetime.fromisoformat(dateTimeStringStart)
+        datetimeEnd = datetime.fromisoformat(dateTimeStringEnd)
 
         try:
             # Git Eclipse
-            initialDate =  AbsoluteDate(dateTimeString,TimeScalesFactory.getUTC())
+            initialDate =  AbsoluteDate(dateTimeStringStart,TimeScalesFactory.getUTC())
             gitEclipse = gitEclipseDetector(param1, param2, param3, param4, param5,
                 param6, typeOrbit, initialDate, duration)
 
             # JSatOrb Eclipse
             satellite = HAL_SatPos(param1, param2, param3, param4, param5, param6, typeOrbit)
-            eclipseCalculator = EclipseCalculator(satellite, datetimeCur, duration)
+            eclipseCalculator = EclipseCalculator(satellite, datetimeStart, datetimeEnd)
             eclipse = eclipseCalculator.getEclipse()
 
             listEclipse = []
@@ -70,7 +72,7 @@ class TestDateConversion(unittest.TestCase):
                 maxOffset = max(maxOffset, offsetCur)
                 listOffset.append(offsetCur)
 
-            print('Max offset: {} s'.format(maxOffset))
+            #print('Max offset: {} s'.format(maxOffset))
             #print('List of offsets: {}'.format(listOffset))
 
         except Exception:
@@ -81,8 +83,10 @@ class TestDateConversion(unittest.TestCase):
         x, y, z = -6142438.668, 3492467.560, -25767.25680
         vx, vy, vz = 505.8479685, 942.7809215, 7435.922231
         typeOrbit = 'cartesian'
-        dateTimeString = '2020-04-03T12:26:11.000'
+        dateTimeStringStart = '2020-04-03T12:26:11.000'
         duration = 86400.
+        dateTimeStringEnd = '2020-04-04T12:26:11.000'
+
 
         if typeOrbit == 'keplerian':
             param1, param2, param3 = sma, ecc, inc
@@ -91,17 +95,17 @@ class TestDateConversion(unittest.TestCase):
             param1, param2, param3 = x, y, z
             param4, param5, param6 = vx, vy, vz
 
-        datetimeCur = datetime.fromisoformat(dateTimeString)
-
+        datetimeStart = datetime.fromisoformat(dateTimeStringStart)
+        datetimeEnd = datetime.fromisoformat(dateTimeStringEnd)
         try:
             # Git Eclipse
-            initialDate =  AbsoluteDate(dateTimeString,TimeScalesFactory.getUTC())
+            initialDate =  AbsoluteDate(dateTimeStringStart,TimeScalesFactory.getUTC())
             gitEclipse = gitEclipseDetector(param1, param2, param3, param4, param5,
                 param6, typeOrbit, initialDate, duration)
 
             # JSatOrb Eclipse
             satellite = HAL_SatPos(param1, param2, param3, param4, param5, param6, typeOrbit)
-            eclipseCalculator = EclipseCalculator(satellite, datetimeCur, duration)
+            eclipseCalculator = EclipseCalculator(satellite, datetimeStart, datetimeEnd)
             eclipse = eclipseCalculator.getEclipse()
 
             listEclipse = []
@@ -126,7 +130,7 @@ class TestDateConversion(unittest.TestCase):
                 maxOffset = max(maxOffset, offsetCur)
                 listOffset.append(offsetCur)
 
-            print('Max offset: {} s'.format(maxOffset))
+            #print('Max offset: {} s'.format(maxOffset))
             #print('List of offsets: {}'.format(listOffset))
             
         except Exception:
