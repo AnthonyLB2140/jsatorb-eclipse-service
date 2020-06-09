@@ -44,7 +44,7 @@ This script will run all tests available in the test folder (all files satisfyin
 
 ## Eclipse Request Example
 
-This request to the REST API contains a demand to the backend to process an Eclipse calculation between the Earth and a given satellite from the 1st to the 2nd of December 2011.  
+This request to the REST API contains a demand to the backend to process an Eclipse calculation of the Sun by the Earth, from a given satellite from the 1st to the 2nd of December 2011.  
 
 Route : '/propagation/eclipses', POST method
 ```json
