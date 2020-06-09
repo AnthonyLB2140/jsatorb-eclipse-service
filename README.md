@@ -1,13 +1,16 @@
-# Eclipse Calculator 
+# JSatOrb Project: Eclipse Calculator 
 
 This code computes eclipse calculation for Earth (WGS84) and the Sun.
 
+
 ## Prerequisites
+
 - Python3.7
 - A specific Python environment (named JSatOrbEnv) containing the following packages (installed through the conda-forge channel):
         - Orekit 10.2 (embedding hipparchus),
         - jinja2,
         - and bottle.
+
 
 ## Launch the service
 
@@ -27,7 +30,20 @@ python src/JSatOrbREST.py
 ```
 By default the service is running on the **port 8000**.
 
+
+# Run the tests
+
+To run the tests, use the following command:  
+```python test/Test[TEST_NAME].py``` where [TEST_NAME] is the name of the test to run or  
+if you already ran the global tests script (`runAllTests.sh`) from the `jsatorb` module, you should have a `runTests.sh` script available in this module folder.
+
+In this case, you can run it directly:  
+```./runTests.sh```
+This script will run all tests available in the test folder (all files satisfying the test/Test*.py pattern).
+
+
 ## Eclipse Request Example
+
 Route : '/propagation/eclipses', POST method
 ```json
 {
@@ -47,7 +63,9 @@ Route : '/propagation/eclipses', POST method
 }
 ```
 
+
 ## Eclipse Response Example
+
 The response is an array of sunlight time interval
 response type :
 
@@ -116,7 +134,7 @@ response type :
 ]
 ```
 
-Some other examples can be found [in the files here](./test-rest/eclipseCalculator-request.http) (link does not work in the Odin Forge yet).
+Some other examples can be found [in the files here](./test-rest/eclipseCalculator-request.http).
 
 ## Module's sequence diagram
 TBD
