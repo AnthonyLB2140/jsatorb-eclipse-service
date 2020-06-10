@@ -140,4 +140,26 @@ Example of response:
 Some other examples can be found [in the files here](./test-rest/eclipseCalculator-request.http).
 
 ## Module's sequence diagram
-TBD
+
+```plantuml
+@startuml
+    skinparam backgroundColor #EEEBDC
+    skinparam handwritten false
+    actor Student
+    Student -> "JSatOrb GUI" : JSON request
+    "JSatOrb GUI" -> "REST API" : code call
+    activate "REST API"
+    "REST API" -> "BACKEND EclipseCalculator.py" : Orekit code call
+    "BACKEND EclipseCalculator.py" -> Orekit : processing orbit propagation and eclipse event handling
+    Orekit -> "BACKEND EclipseCalculator.py" : returning propagated orbit and event dates
+    "BACKEND EclipseCalculator.py" -> "REST API" : returning eclipse dates
+    "REST API" -> "JSatOrb GUI" : returning eclipse dates (JSON)
+    deactivate "REST API"    
+@enduml
+```
+
+``` 
+JSatOrb client can be the Web GUI or a batch client.
+The REST API is the centralized REST API which code is in the jsatorb-rest-apî/JSatOrbREST.py Python module.
+The back-end code is in the jsatorb-eclipse-service/EclipseCalculator.py Python module.
+```
