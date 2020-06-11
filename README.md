@@ -161,5 +161,5 @@ Some other examples can be found [in the files here](./test-rest/eclipseCalculat
 ``` 
 JSatOrb client can be the Web GUI or a batch client.
 The REST API is the centralized REST API which code is in the jsatorb-rest-apî/JSatOrbREST.py Python module.
-The back-end code is in the jsatorb-eclipse-service/EclipseCalculator.py Python module.
+The back-end code is in the jsatorb-eclipse-service/src/EclipseCalculator.py Python module.
 ```
