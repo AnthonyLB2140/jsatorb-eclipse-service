@@ -1,6 +1,6 @@
 # JSatOrb Project: Eclipse Calculator 
 
-This code computes eclipse calculation for the Earth (WGS84) and the Sun.
+This module computes eclipse calculation for the Earth (WGS84) and the Sun.
 
 
 ## Prerequisites
@@ -82,58 +82,7 @@ Example of response:
     "start": "2011-12-01T18:09:02.781",
     "end": "2011-12-01T18:41:25.530"
   },
-  {
-    "start": "2011-12-01T19:48:50.910",
-    "end": "2011-12-01T20:21:14.317"
-  },
-  {
-    "start": "2011-12-01T21:28:39.042",
-    "end": "2011-12-01T22:01:03.104"
-  },
-  {
-    "start": "2011-12-01T23:08:27.175",
-    "end": "2011-12-01T23:40:51.892"
-  },
-  {
-    "start": "2011-12-02T00:48:15.310",
-    "end": "2011-12-02T01:20:40.679"
-  },
-  {
-    "start": "2011-12-02T02:28:03.446",
-    "end": "2011-12-02T03:00:29.467"
-  },
-  {
-    "start": "2011-12-02T04:07:51.585",
-    "end": "2011-12-02T04:40:18.254"
-  },
-  {
-    "start": "2011-12-02T05:47:39.725",
-    "end": "2011-12-02T06:20:07.042"
-  },
-  {
-    "start": "2011-12-02T07:27:27.867",
-    "end": "2011-12-02T07:59:55.830"
-  },
-  {
-    "start": "2011-12-02T09:07:16.011",
-    "end": "2011-12-02T09:39:44.617"
-  },
-  {
-    "start": "2011-12-02T10:47:04.157",
-    "end": "2011-12-02T11:19:33.405"
-  },
-  {
-    "start": "2011-12-02T12:26:52.304",
-    "end": "2011-12-02T12:59:22.192"
-  },
-  {
-    "start": "2011-12-02T14:06:40.453",
-    "end": "2011-12-02T14:39:10.980"
-  },
-  {
-    "start": "2011-12-02T15:46:28.604",
-    "end": "2011-12-02T16:18:59.768"
-  }
+  [...]
 ]
 ```
 
@@ -146,20 +95,17 @@ Some other examples can be found [in the files here](./test-rest/eclipseCalculat
     skinparam backgroundColor #EEEBDC
     skinparam handwritten false
     actor Student
-    Student -> "JSatOrb GUI" : JSON request
-    "JSatOrb GUI" -> "REST API" : code call
+    Student -> "REST API" : JSON request
     activate "REST API"
-    "REST API" -> "BACKEND EclipseCalculator.py" : Orekit code call
-    "BACKEND EclipseCalculator.py" -> Orekit : processing orbit propagation and eclipse event handling
-    Orekit -> "BACKEND EclipseCalculator.py" : returning propagated orbit and event dates
-    "BACKEND EclipseCalculator.py" -> "REST API" : returning eclipse dates
-    "REST API" -> "JSatOrb GUI" : returning eclipse dates (JSON)
+    "REST API" -> "BACKEND EclipseCalculator.py" : mission data set
+    "BACKEND EclipseCalculator.py" -> Orekit : orbit and handler
+    Orekit -> "BACKEND EclipseCalculator.py" : propagated orbit and eclipse dates
+    "BACKEND EclipseCalculator.py" -> "REST API" : eclipse dates
     deactivate "REST API"    
 @enduml
 ```
 
-``` 
-JSatOrb client can be the Web GUI or a batch client.
-The REST API is the centralized REST API which code is in the jsatorb-rest-apî/JSatOrbREST.py Python module.
-The back-end code is in the jsatorb-eclipse-service/src/EclipseCalculator.py Python module.
-```
+ _Remarks:_
+- JSatOrb client can be the Web GUI or a batch client.
+- The REST API is the centralized REST API which code is in the jsatorb-rest-apî/JSatOrbREST.py Python module.
+- The back-end code is in the jsatorb-eclipse-service/src/EclipseCalculator.py Python module.
