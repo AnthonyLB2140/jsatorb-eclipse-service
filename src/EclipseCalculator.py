@@ -24,6 +24,9 @@ from org.orekit.utils import AngularDerivativesFilter, Constants, IERSConvention
 
 from org.orekit.propagation.sampling import OrekitFixedStepHandler, PythonOrekitFixedStepHandler
 
+'''
+This class is currently not used in JSatOrb but can still be called by the REST API.
+'''
 
 class HAL_SatPos:
 
